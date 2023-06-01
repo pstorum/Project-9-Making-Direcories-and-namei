@@ -93,7 +93,6 @@ int directory_make(char *path){
     char dir_name[1024];
 
     get_dirname(path, dir);
-    
     get_basename(path,dir_name);
 
     struct inode *parent_dir = namei();
@@ -103,11 +102,13 @@ int directory_make(char *path){
     unsigned char block[BLOCK_SIZE];
     bread(new_dir_data, block);
 
+    //set new directory self and parent directory values
     write_u16(block+(DIRECTORY_ENTRY_SIZE*0), new_dir->inode_num);
     strcpy((char*)block+FILE_NAME_OFFSET+(DIRECTORY_ENTRY_SIZE*0), ".");
     write_u16(block+(DIRECTORY_ENTRY_SIZE*1), parent_dir->inode_num);
     strcpy((char*)block+FILE_NAME_OFFSET+(DIRECTORY_ENTRY_SIZE*1), "..");
 
+    //set new dir flags size and block
     new_dir->flags = DIRECTORY_FLAG;
     new_dir->size = INIT_DIRECTORY_SIZE;
     new_dir->block_ptr[0] = new_dir_data;
@@ -116,10 +117,11 @@ int directory_make(char *path){
 
     bread(parent_dir->block_ptr[0],block);
 
+    //add new directory to parent directory
     int offset = parent_dir->size;
-
     write_u16(block+offset, new_dir->inode_num);
     strcpy((char*)block+offset+FILE_NAME_OFFSET+(DIRECTORY_ENTRY_SIZE*0), dir_name);
+    //update parent size
     parent_dir->size += DIRECTORY_ENTRY_SIZE;
 
     bwrite(parent_dir->block_ptr[0], block);
