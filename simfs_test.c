@@ -385,6 +385,10 @@ void new_dir_test(void){
     image_open(filename, truncate);
     
     mkfs();
+
+    int bad_dir = directory_make("foo");
+    CTEST_ASSERT(bad_dir == -1, "Testing for bad directory name");
+
     directory_make("/foo");
 
 
