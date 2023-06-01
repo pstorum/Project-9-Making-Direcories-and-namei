@@ -89,11 +89,16 @@ struct inode *namei(){
 
 int directory_make(char *path){
 
+    if(path[0] != '/'){
+        return -1;
+    }
+
     char dir[1024];
     char dir_name[1024];
 
     get_dirname(path, dir);
     get_basename(path,dir_name);
+
 
     struct inode *parent_dir = namei();
     struct inode *new_dir = ialloc();
