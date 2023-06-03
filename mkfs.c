@@ -69,7 +69,7 @@ int directory_get(struct directory *dir, struct directory_entry *ent){
     ent->inode_num = read_u16(block + offset_in_block);
     strcpy(ent->name, (char*)block+offset_in_block+2);
 
-    dir->offset += 32;
+    dir->offset += DIRECTORy_OFFSET;
 
     return 0;
 }
@@ -79,8 +79,8 @@ void directory_close(struct directory *d){
     free(d);
 }
 
-//removed "char *path" for now since the instructions return root directory for now
-//leaving it cause build warning for unused param
+//removed "char *path" for now since the instructions say return root directory for now
+//leaving it out because build warning for unused param
 struct inode *namei(){
 
     struct inode *namei_node_num = iget(ROOT_INODE_NUM);
